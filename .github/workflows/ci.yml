@@ -51,14 +51,6 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           path: ws/src/omni_robot_bridge
-      - name: Checkout shared Omni interfaces
-        uses: actions/checkout@v7.0.1
-        with:
-          repository: YanYaoyuan/omni_robot_interfaces
-          ref: main
-          fetch-depth: 1
-          path: ws/src/omni_robot_interfaces
-          token: ${{ secrets.CI_GIT_TOKEN || github.token }}
       - name: Checkout TF manager and SLAM status contract
         uses: actions/checkout@v7.0.1
         with:
@@ -66,7 +58,14 @@ jobs:
           ref: main
           fetch-depth: 1
           path: ws/src/omni_tf_manager
-          token: ${{ secrets.CI_GIT_TOKEN || github.token }}
+      - name: Checkout shared Omni interfaces
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: YanYaoyuan/omni_robot_interfaces
+          ref: main
+          fetch-depth: 1
+          path: ws/src/omni_robot_interfaces
+          ssh-key: ${{ secrets.OMNI_INTERFACES_DEPLOY_KEY }}
       - name: Install build tools
         run: |
           apt-get update
@@ -111,14 +110,6 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           path: ws/src/omni_robot_bridge
-      - name: Checkout shared Omni interfaces
-        uses: actions/checkout@v7.0.1
-        with:
-          repository: YanYaoyuan/omni_robot_interfaces
-          ref: main
-          fetch-depth: 1
-          path: ws/src/omni_robot_interfaces
-          token: ${{ secrets.CI_GIT_TOKEN || github.token }}
       - name: Checkout TF manager and SLAM status contract
         uses: actions/checkout@v7.0.1
         with:
@@ -126,7 +117,14 @@ jobs:
           ref: main
           fetch-depth: 1
           path: ws/src/omni_tf_manager
-          token: ${{ secrets.CI_GIT_TOKEN || github.token }}
+      - name: Checkout shared Omni interfaces
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: YanYaoyuan/omni_robot_interfaces
+          ref: main
+          fetch-depth: 1
+          path: ws/src/omni_robot_interfaces
+          ssh-key: ${{ secrets.OMNI_INTERFACES_DEPLOY_KEY }}
       - name: Install build tools
         run: |
           apt-get update
