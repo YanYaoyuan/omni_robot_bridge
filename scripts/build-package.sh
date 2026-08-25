@@ -229,7 +229,7 @@ install -m 0644 "${SCRIPT_DIR}/deploy-core.sh" "${STAGE}/lib/deploy-core.sh"
 install -m 0755 "${SCRIPT_DIR}/ota.sh" "${STAGE}/ota.sh"
 
 # Reproducible metadata: honor SOURCE_DATE_EPOCH, else fall back to the
-# last rosdeck commit time, else the package.xml mtime. The origin is
+# last bridge commit time, else the package.xml mtime. The origin is
 # recorded in the manifest so a reader knows how strong the guarantee is.
 SOURCE_EPOCH="${SOURCE_DATE_EPOCH:-}"
 EPOCH_ORIGIN=""
@@ -246,10 +246,11 @@ fi
 # Pin every build input into the facts file. Git checkouts pin to their
 # HEAD sha (+ dirty flag); vendor drops without VCS pin to a content hash.
 SOURCES_ARGS=(
-  "rosdeck=${PACKAGE_DIR}|https://github.com/lifliu/rosdeck.git"
-  "omni_robot_interfaces=${BUILD_ROOT}/src/omni_robot_interfaces|https://github.com/lifliu/omni_robot_interfaces.git"
-  "omni_slam_interfaces=${BUILD_ROOT}/src/omni_slam_interfaces|https://github.com/YanYaoyuan/omni_slam.git"
-  "omni_mission_manager=part-of:rosdeck"
+  "omni_robot_bridge=${PACKAGE_DIR}|https://github.com/YanYaoyuan/omni_robot_bridge.git"
+  "omni_robot_interfaces=${BUILD_ROOT}/src/omni_robot_interfaces|https://github.com/YanYaoyuan/omni_robot_interfaces.git"
+  "omni_tf_manager=${BUILD_ROOT}/src/omni_tf_manager|https://github.com/YanYaoyuan/omni_tf_manager.git"
+  "omni_mission_manager=${BUILD_ROOT}/src/omni_mission_manager|https://github.com/YanYaoyuan/omni_mission_manager.git"
+  "omni_ws_gateway=${BUILD_ROOT}/src/omni_ws_gateway|https://github.com/lifliu/rosdeck.git"
 )
 if [[ "${PROFILE}" == "vbot" ]]; then
   SOURCES_ARGS+=("vbot_ros2_msgs=${VBOT_MSGS}|https://github.com/VitaDynamics/vbot_ros2_msgs.git")

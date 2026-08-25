@@ -34,7 +34,7 @@
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <omni_robot_interfaces/msg/mission_status.hpp>
 #include <omni_robot_interfaces/msg/robot_state.hpp>
-#include <omni_slam_interfaces/msg/slam_status.hpp>
+#include <omni_tf_manager/msg/slam_status.hpp>
 #include <diagnostic_msgs/msg/diagnostic_array.hpp>
 #include <diagnostic_msgs/msg/diagnostic_status.hpp>
 #include <diagnostic_msgs/msg/key_value.hpp>
@@ -124,8 +124,8 @@ struct SlamRelayState
 {
   bool known{false};
   AdapterSteadyTime received_at{};
-  uint8_t mode{omni_slam_interfaces::msg::SlamStatus::MODE_STOPPED};
-  uint8_t state{omni_slam_interfaces::msg::SlamStatus::STATE_STOPPED};
+  uint8_t mode{omni_tf_manager::msg::SlamStatus::MODE_STOPPED};
+  uint8_t state{omni_tf_manager::msg::SlamStatus::STATE_STOPPED};
   std::string map_id;
   std::string map_version;
   float fitness{std::numeric_limits<float>::quiet_NaN()};
@@ -551,9 +551,9 @@ public:
         rclcpp::QoS(rclcpp::KeepLast(1)).reliable().transient_local();
       robot_state_ = create_publisher<omni_robot_interfaces::msg::RobotState>(
         robot_state_topic, robot_state_qos);
-      slam_status_ = create_subscription<omni_slam_interfaces::msg::SlamStatus>(
+      slam_status_ = create_subscription<omni_tf_manager::msg::SlamStatus>(
         slam_status_topic, robot_state_qos,
-        [this](const omni_slam_interfaces::msg::SlamStatus::SharedPtr message) {
+        [this](const omni_tf_manager::msg::SlamStatus::SharedPtr message) {
           slam_relay_.known = true;
           slam_relay_.received_at = AdapterSteadyClock::now();
           slam_relay_.mode = message->mode;
@@ -1744,7 +1744,7 @@ private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr adapter_sdk_error_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr adapter_summary_;
   rclcpp::Publisher<omni_robot_interfaces::msg::RobotState>::SharedPtr robot_state_;
-  rclcpp::Subscription<omni_slam_interfaces::msg::SlamStatus>::SharedPtr slam_status_;
+  rclcpp::Subscription<omni_tf_manager::msg::SlamStatus>::SharedPtr slam_status_;
   rclcpp::Subscription<omni_robot_interfaces::msg::MissionStatus>::SharedPtr mission_status_;
   rclcpp::Subscription<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_vel_teleop_;
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_docking_;

@@ -6,7 +6,7 @@
 
 #include <omni_robot_interfaces/msg/mission_status.hpp>
 #include <omni_robot_interfaces/msg/robot_state.hpp>
-#include <omni_slam_interfaces/msg/slam_status.hpp>
+#include <omni_tf_manager/msg/slam_status.hpp>
 
 namespace bridge = rosdeck_robot_bridge;
 using bridge::RobotStateAggregator;
@@ -84,7 +84,7 @@ TEST(RobotStateAggregator, OperationalModePriority)
   {
     RobotStateAggregator::Relay relay;
     relay.slam_fresh = true;
-    relay.slam_mode = omni_slam_interfaces::msg::SlamStatus::MODE_LOCALIZATION;
+    relay.slam_mode = omni_tf_manager::msg::SlamStatus::MODE_LOCALIZATION;
     EXPECT_EQ(
       RobotStateAggregator::map_operational_mode(
         false, false, RobotState::AUTHORITY_APP, relay),
@@ -180,7 +180,7 @@ TEST(RobotStateAggregator, LeaseRemaining)
 TEST(RobotStateAggregator, LocalizationMapping)
 {
   using RobotState = omni_robot_interfaces::msg::RobotState;
-  using SlamStatus = omni_slam_interfaces::msg::SlamStatus;
+  using SlamStatus = omni_tf_manager::msg::SlamStatus;
 
   EXPECT_EQ(
     RobotStateAggregator::map_localization(
@@ -236,8 +236,8 @@ TEST(RobotStateAggregator, BuildAppliesRelaysAndMotionAuthorization)
   {
     RobotStateAggregator::Relay relay;
     relay.slam_fresh = true;
-    relay.slam_mode = omni_slam_interfaces::msg::SlamStatus::MODE_LOCALIZATION;
-    relay.slam_state = omni_slam_interfaces::msg::SlamStatus::STATE_LOCALIZED;
+    relay.slam_mode = omni_tf_manager::msg::SlamStatus::MODE_LOCALIZATION;
+    relay.slam_state = omni_tf_manager::msg::SlamStatus::STATE_LOCALIZED;
     relay.slam_map_id = "floor1";
     relay.slam_map_version = "12";
     relay.slam_fitness = 0.8F;
@@ -315,7 +315,6 @@ TEST(RobotStateAggregator, BuildAppliesRelaysAndMotionAuthorization)
 
 TEST(RobotStateAggregator, EffectivelyChanged)
 {
-  using RobotState = omni_robot_interfaces::msg::RobotState;
   const auto previous = build_message();
 
   // Identical message -> no change.

@@ -9,7 +9,7 @@ find_package(ament_cmake REQUIRED)
 find_package(diagnostic_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(omni_robot_interfaces REQUIRED)
-find_package(omni_slam_interfaces REQUIRED)
+find_package(omni_tf_manager REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -57,7 +57,7 @@ add_executable(rosdeck_robot_bridge_node
 target_include_directories(rosdeck_robot_bridge_node PRIVATE include)
 ament_target_dependencies(
   rosdeck_robot_bridge_node diagnostic_msgs geometry_msgs omni_robot_interfaces
-  omni_slam_interfaces rclcpp sensor_msgs std_msgs std_srvs)
+  omni_tf_manager rclcpp sensor_msgs std_msgs std_srvs)
 
 add_executable(rosdeck_safety_supervisor_node
   src/safety_supervisor_node.cpp
@@ -124,7 +124,7 @@ if(BUILD_TESTING)
   target_include_directories(test_robot_state_aggregator PRIVATE include)
   target_compile_options(test_robot_state_aggregator PRIVATE -Wall -Wextra -Wpedantic)
   ament_target_dependencies(test_robot_state_aggregator
-    omni_robot_interfaces omni_slam_interfaces)
+    omni_robot_interfaces omni_tf_manager)
   add_test(
     NAME test_product_bringup
     COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_product_bringup.py

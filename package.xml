@@ -3,8 +3,8 @@
 <package format="3">
   <name>rosdeck_robot_bridge</name>
   <version>0.4.0</version>
-  <description>Deployable robot-side bridge for the Rosdeck mobile application.</description>
-  <maintainer email="maintainer@example.com">Rosdeck Maintainers</maintainer>
+  <description>Unified robot-side bridge, safety arbiter and vendor adapter for omni quadrupeds.</description>
+  <maintainer email="38186557+YanYaoyuan@users.noreply.github.com">YanYaoyuan</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
@@ -15,7 +15,7 @@
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>omni_robot_interfaces</depend>
-  <depend>omni_slam_interfaces</depend>
+  <depend>omni_tf_manager</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
 

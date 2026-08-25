@@ -12,7 +12,7 @@
 
 #include <omni_robot_interfaces/msg/mission_status.hpp>
 #include <omni_robot_interfaces/msg/robot_state.hpp>
-#include <omni_slam_interfaces/msg/slam_status.hpp>
+#include <omni_tf_manager/msg/slam_status.hpp>
 
 namespace rosdeck_robot_bridge
 {
@@ -33,7 +33,7 @@ class RobotStateAggregator
 public:
   using RobotState = omni_robot_interfaces::msg::RobotState;
   using MissionStatus = omni_robot_interfaces::msg::MissionStatus;
-  using SlamStatus = omni_slam_interfaces::msg::SlamStatus;
+  using SlamStatus = omni_tf_manager::msg::SlamStatus;
 
   /** Relay inputs. Unfresh relays must leave their payload fields untouched. */
   struct Relay

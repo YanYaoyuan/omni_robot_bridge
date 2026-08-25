@@ -42,7 +42,7 @@ def make_stage(stage_dir):
     for package, version in (
         ("rosdeck_robot_bridge", "0.0.0"),
         ("omni_robot_interfaces", "0.1.0"),
-        ("omni_slam_interfaces", "0.1.0"),
+        ("omni_tf_manager", "0.1.0"),
     ):
         share = os.path.join(stage_dir, "runtime", "share", package)
         os.makedirs(share, exist_ok=True)

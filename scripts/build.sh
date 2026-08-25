@@ -10,14 +10,14 @@ CLEAN_CACHE=0
 ZSIBOT_SDK=""
 ZSIBOT_MODEL="zsl-1"
 INTERFACES_DIR=""
-SLAM_DIR=""
+TF_MANAGER_DIR=""
 MISSION_MANAGER_DIR=""
 WS_GATEWAY_DIR=""
-OMNI_ROBOT_INTERFACES_REPO="${OMNI_ROBOT_INTERFACES_REPO:-https://github.com/lifliu/omni_robot_interfaces.git}"
-OMNI_SLAM_REPO="${OMNI_SLAM_REPO:-https://github.com/YanYaoyuan/omni_slam.git}"
+OMNI_ROBOT_INTERFACES_REPO="${OMNI_ROBOT_INTERFACES_REPO:-https://github.com/YanYaoyuan/omni_robot_interfaces.git}"
+OMNI_TF_MANAGER_REPO="${OMNI_TF_MANAGER_REPO:-https://github.com/YanYaoyuan/omni_tf_manager.git}"
 
 usage() {
-  echo "Usage: ./scripts/build.sh [--profile vbot|zsibot] [--ros-setup PATH] [--prefix PATH] [--zsibot-sdk PATH] [--zsibot-model zsl-1|zsl-1w] [--interfaces-dir PATH] [--slam-dir PATH] [--mission-manager-dir PATH] [--ws-gateway-dir PATH] [--clean]"
+  echo "Usage: ./scripts/build.sh [--profile vbot|zsibot] [--ros-setup PATH] [--prefix PATH] [--zsibot-sdk PATH] [--zsibot-model zsl-1|zsl-1w] [--interfaces-dir PATH] [--tf-manager-dir PATH] [--mission-manager-dir PATH] [--ws-gateway-dir PATH] [--clean]"
 }
 
 while (($#)); do
@@ -28,7 +28,7 @@ while (($#)); do
     --zsibot-sdk) ZSIBOT_SDK="${2:?missing Zsibot SDK path}"; shift 2 ;;
     --zsibot-model) ZSIBOT_MODEL="${2:?missing Zsibot model}"; shift 2 ;;
     --interfaces-dir) INTERFACES_DIR="${2:?missing interfaces dir}"; shift 2 ;;
-    --slam-dir) SLAM_DIR="${2:?missing slam dir}"; shift 2 ;;
+    --tf-manager-dir) TF_MANAGER_DIR="${2:?missing TF manager dir}"; shift 2 ;;
     --mission-manager-dir) MISSION_MANAGER_DIR="${2:?missing mission manager dir}"; shift 2 ;;
     --ws-gateway-dir) WS_GATEWAY_DIR="${2:?missing ws gateway dir}"; shift 2 ;;
     --clean) CLEAN_CACHE=1; shift ;;
@@ -108,7 +108,7 @@ fi
 
 # The RobotState aggregator publishes the frozen V1 contract types, so the
 # interface packages must be in the same colcon workspace. Prefer local
-# checkouts (--interfaces-dir/--slam-dir); otherwise reuse what is already
+# checkouts (--interfaces-dir/--tf-manager-dir); otherwise reuse what is already
 # synced under the install prefix; otherwise clone the tracked repos.
 sync_omni_robot_interfaces() {
   local dest="${INSTALL_PREFIX}/src/omni_robot_interfaces"
@@ -165,35 +165,29 @@ sync_omni_ws_gateway() {
   echo "Synced omni_ws_gateway from ${src_dir}"
 }
 
-sync_omni_slam_interfaces() {
-  local dest="${INSTALL_PREFIX}/src/omni_slam_interfaces"
-  if [[ -n "${SLAM_DIR}" ]]; then
-    if [[ ! -f "${SLAM_DIR}/omni_slam_interfaces/package.xml" ]]; then
-      echo "--slam-dir must point at the omni_slam repo (containing omni_slam_interfaces/): ${SLAM_DIR}" >&2
+sync_omni_tf_manager() {
+  local dest="${INSTALL_PREFIX}/src/omni_tf_manager"
+  if [[ -n "${TF_MANAGER_DIR}" ]]; then
+    if [[ ! -f "${TF_MANAGER_DIR}/package.xml" ]]; then
+      echo "--tf-manager-dir must point at the omni_tf_manager package: ${TF_MANAGER_DIR}" >&2
       exit 1
     fi
     rm -rf "${dest}"
     mkdir -p "${dest}"
-    cp -a "${SLAM_DIR}/omni_slam_interfaces/." "${dest}/"
-    echo "Synced omni_slam_interfaces from ${SLAM_DIR}"
+    cp -a "${TF_MANAGER_DIR}/." "${dest}/"
+    echo "Synced omni_tf_manager from ${TF_MANAGER_DIR}"
   elif [[ ! -f "${dest}/package.xml" ]]; then
     command -v git >/dev/null 2>&1 || {
-      echo "git is required to clone ${OMNI_SLAM_REPO}; pass --slam-dir PATH." >&2
+      echo "git is required to clone ${OMNI_TF_MANAGER_REPO}; pass --tf-manager-dir PATH." >&2
       exit 1
     }
-    echo "Cloning ${OMNI_SLAM_REPO} (sparse: omni_slam_interfaces) into ${dest}"
-    local tmp
-    tmp="$(mktemp -d)"
-    git clone --depth 1 --filter=blob:none --sparse "${OMNI_SLAM_REPO}" "${tmp}/repo"
-    git -C "${tmp}/repo" sparse-checkout set omni_slam_interfaces
-    rm -rf "${dest}"
-    mv "${tmp}/repo/omni_slam_interfaces" "${dest}"
-    rm -rf "${tmp}"
+    echo "Cloning ${OMNI_TF_MANAGER_REPO} into ${dest}"
+    git clone --depth 1 "${OMNI_TF_MANAGER_REPO}" "${dest}"
   fi
 }
 
 sync_omni_robot_interfaces
-sync_omni_slam_interfaces
+sync_omni_tf_manager
 sync_omni_mission_manager
 sync_omni_ws_gateway
 
@@ -202,7 +196,7 @@ COLCON_ARGS=(
   --build-base "${INSTALL_PREFIX}/build"
   --install-base "${INSTALL_PREFIX}/install"
   --merge-install
-  --packages-select rosdeck_robot_bridge omni_robot_interfaces omni_slam_interfaces omni_mission_manager omni_ws_gateway
+  --packages-select rosdeck_robot_bridge omni_robot_interfaces omni_tf_manager omni_mission_manager omni_ws_gateway
 )
 if [[ "${CLEAN_CACHE}" -eq 1 ]]; then
   COLCON_ARGS+=(--cmake-clean-cache)

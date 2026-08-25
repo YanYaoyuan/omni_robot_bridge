@@ -182,7 +182,7 @@ class ProductBringupStaticTest(unittest.TestCase):
         # console script is not installed; the release packager must stage
         # both gateway templates into the bundle.
         build = _source(PACKAGE_ROOT / "scripts" / "build.sh")
-        self.assertIn("--packages-select rosdeck_robot_bridge omni_robot_interfaces omni_slam_interfaces omni_mission_manager omni_ws_gateway", build)
+        self.assertIn("--packages-select rosdeck_robot_bridge omni_robot_interfaces omni_tf_manager omni_mission_manager omni_ws_gateway", build)
         self.assertIn("install/lib/omni_ws_gateway/omni-ws-gateway", build)
         packager = _source(PACKAGE_ROOT / "scripts" / "build-package.sh")
         self.assertIn("templates/run-gateway.in", packager)

@@ -13,10 +13,10 @@ NODE_NAME="rosdeck_robot_bridge"
 ZSIBOT_SDK=""
 ZSIBOT_MODEL=""
 INTERFACES_DIR=""
-SLAM_DIR=""
+TF_MANAGER_DIR=""
 
 usage() {
-  echo "Usage: sudo ./scripts/deploy.sh [--profile vbot|zsibot] [--ros-setup PATH] [--prefix PATH] [--zsibot-sdk PATH --zsibot-model zsl-1|zsl-1w] [--interfaces-dir PATH] [--slam-dir PATH] [--clean] [--no-start] [--no-foxglove]"
+  echo "Usage: sudo ./scripts/deploy.sh [--profile vbot|zsibot] [--ros-setup PATH] [--prefix PATH] [--zsibot-sdk PATH --zsibot-model zsl-1|zsl-1w] [--interfaces-dir PATH] [--tf-manager-dir PATH] [--clean] [--no-start] [--no-foxglove]"
 }
 
 while (($#)); do
@@ -27,7 +27,7 @@ while (($#)); do
     --zsibot-sdk) ZSIBOT_SDK="${2:?missing Zsibot SDK path}"; shift 2 ;;
     --zsibot-model) ZSIBOT_MODEL="${2:?missing Zsibot model}"; shift 2 ;;
     --interfaces-dir) INTERFACES_DIR="${2:?missing interfaces dir}"; shift 2 ;;
-    --slam-dir) SLAM_DIR="${2:?missing slam dir}"; shift 2 ;;
+    --tf-manager-dir) TF_MANAGER_DIR="${2:?missing TF manager dir}"; shift 2 ;;
     --clean) CLEAN_CACHE=1; shift ;;
     --no-start) ENABLE_SERVICE=0; shift ;;
     --no-foxglove) ENABLE_FOXGLOVE=0; shift ;;
@@ -91,8 +91,8 @@ fi
 if [[ -n "${INTERFACES_DIR}" ]]; then
   BUILD_ARGS+=(--interfaces-dir "${INTERFACES_DIR}")
 fi
-if [[ -n "${SLAM_DIR}" ]]; then
-  BUILD_ARGS+=(--slam-dir "${SLAM_DIR}")
+if [[ -n "${TF_MANAGER_DIR}" ]]; then
+  BUILD_ARGS+=(--tf-manager-dir "${TF_MANAGER_DIR}")
 fi
 if [[ "${CLEAN_CACHE}" -eq 1 ]]; then
   BUILD_ARGS+=(--clean)
